@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Dereje's personal website</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+<div id="header">
+    <div class="container">
+        <nav>
+            <img src="images/logo.png" alt="Dereje's Logo" class="logo">
+            <ul>
+                <li><a href="#header">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#portfolio">Projects</a></li>
+                <li><a href="achievements.html">Achievements</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
+        </nav>
+        <div class="header-text">
+            <p>Hi, I'm <span>Dereje</span>  <br>and welcome to my website!</p>
+            <p>Explore my <span>projects</span>, learn <span>about</span> me, and <br> get in touch!</p>
+
+        </div>
+    </div>
+</div>
+
+<!--------about section-------->
+
+<div id="about">
+    <div class="container">
+        <div class="row">
+            <div class="about-col-1">
+                <img src="images/user.jpg" style="width: 100%; height: auto;" alt="Dereje's Image">
+            </div>
+            <div class="about-col-2">
+                <h1 class="sub-title">About Me</h1>
+                <p>Hi, I'm Dereje, a passionate software developer with a love for creating innovative solutions.</p>
+                <p>I specialize in web development, android applications, and software engineering.
+                    My goal is to build user-friendly applications that solve real-world problems.</p>
+                <div class="tab-titles">
+                    <p class="tab-links active-link" onclick="opentab('skills')">Skills</p>
+                    <p class="tab-links" onclick="opentab('experience')">Experience</p>
+                    <p class="tab-links" onclick="opentab('education')">Education</p>
+                </div>
+                <div class="tab-contents active-tab" id="skills">
+                    <div class="skills-grid">
+                        <ul>
+                            <li><span>Python</span><br>
+                            <li><strong>APIs:</strong> RESTful API Integration, JSON</li>
+                            <li><strong>Web Development:</strong> Flask, Django, Bootstrap, HTML, CSS, JavaScript</li>
+                            <li><strong>Automation:</strong> Selenium, Scripting, Web Scraping (BeautifulSoup, Requests)</li>
+                            <li><strong>Data:</strong> Pandas, NumPy, File Handling, CSV, JSON</li>
+                            <li><strong>Testing:</strong> unittest, pytest</li>
+                            <li><strong>Database:</strong> SQLite, SQLAlchemy</li>
+                            <li><strong>Version Control:</strong> Git & GitHub</li>
+                        </ul>
+
+                        <ul>
+                          <li><span>AWS</span><br></li>
+                          <li><strong>Instance Management:</strong> Launching, Configuring, and Terminating EC2 Instances</li>
+                          <li><strong>OS & Access:</strong> Working with Ubuntu/Linux, SSH Key Pair Access</li>
+                          <li><strong>Networking:</strong> Security Groups, Inbound/Outbound Rules, Public IP Setup</li>
+                          <li><strong>Storage:</strong> Managing EBS Volumes, Attaching and Mounting Storage</li>
+                          <li><strong>Monitoring:</strong> EC2 Status Checks, CloudWatch (basic)</li>
+                          <li><strong>Web Hosting:</strong> Hosting Websites and Web Applications</li>
+                          <li><strong>Deployment:</strong> Deploying Docker Containers and Web Servers (Nginx, Flask)</li>
+                          <li><strong>Remote Tools:</strong> SCP, SFTP for File Transfer</li>
+                          <li><strong>Security:</strong> IAM Roles (basic), Key Pairs, Secure Shell Access</li>
+                          <li><strong>Other Services:</strong> Integration with S3</li>
+                        </ul>
+
+
+                        <ul>
+                          <li><span>Docker</span><br>
+                          <li><strong>Containerization:</strong> Docker CLI, Dockerfile, Docker Compose</li>
+                          <li><strong>Image Management:</strong> Building, Tagging, Pushing to Docker Hub</li>
+                          <li><strong>Container Lifecycle:</strong> Running, Stopping, Removing Containers</li>
+                          <li><strong>Networking:</strong> Port Binding, Docker Networks</li>
+                          <li><strong>Volumes:</strong> Data Persistence using Docker Volumes</li>
+                          <li><strong>CI/CD Concepts:</strong> Continuous Integration, Continuous Deployment</li>
+                          <li><strong>GitHub Actions:</strong> Automating Tests, Builds, and Deployment</li>
+                          <li><strong>Deployment:</strong> Deploying Docker Images to AWS EC2</li>
+                          <li><strong>Secrets Management:</strong> GitHub Actions Secrets & Environment Variables</li>
+                          <li><strong>Other Tools:</strong> Docker Hub, GitHub Actions Marketplace</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="tab-contents" id="experience">
+                  <ul>
+                    <li><span>2024 – Present</span><br>
+                        E-Commerce – Ever green goodwill, USA<br>
+                        <p>Handled product listings, descriptions, and pricing on platforms like eBay and ShopGoodwill.
+                            Responsible for answering customer inquiries, managing product photography,
+                            and ensuring accurate inventory updates.</p>
+                        <p><strong>Skills & Tools:</strong> eBay, ShopGoodwill, Excel, Product Photography, Customer Support, Online Order Management</p>
+                    <li><span>2021 – 2023</span><br>
+                      Mechanical Design Engineer – Ethiopia<br>
+                      <p>Worked on designing and modeling mechanical components and systems for industrial and commercial applications. Gained strong experience in using engineering software for simulation and product development.</p>
+                      <p><strong>Tools & Software:</strong> SolidWorks, AutoCAD, ANSYS, CATIA, MATLAB</p>
+                    </li>
+                  </ul>
+                </div>
+                <div class="tab-contents" id="education">
+                    <ul>
+                        <li><span>Sep 2024 – Jun 2025</span><br>
+                          Graduate Certificate in Software Development – University of Washington, USA
+                        </li>
+                        <li><span>Oct 2016 – Dec 2021</span><br>
+                          BSc in Mechanical Engineering – Bahir Dar University, Ethiopia
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--------portfolio section-------->
+<div id="portfolio">
+    <div class="container">
+        <h1 class="sub-title">My Projects</h1>
+        <p>Here are some of the projects I've worked on:</p>
+        <div class="work-list">
+            <div class="work">
+                <img src="images/work-1.png" style="width: 100%; height: auto;" alt="Project 1">
+                <div class="layer">
+                    <h3> File System Watcher Window Application </h3>
+                    <p>A web application that helps users manage their tasks efficiently.</p>
+                    <a href="#"><i class="fa-solid fa-link"></i></a>
+                </div>
+            </div>
+            <div class="work">
+                <img src="images/work-2.png" style="width: 100%; height: auto;" alt="Project 2">
+                <div class="layer">
+                    <h3>Automat payment with python using selenium python module</h3>
+                    <p>A mobile app that connects users with local services.</p>
+                    <a href="#"><i class="fa-solid fa-link"></i></a>
+                </div>
+            </div>
+            <div class="work">
+                <img src="images/work-3.png" style="width: 100%; height: auto;" alt="Project 3">
+                <div class="layer">
+                    <h3>Career Finder</h3>
+                    <p>An e-commerce platform that allows users to buy and sell products.</p>
+                    <a href="#"><i class="fa-solid fa-link"></i></a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!--------contact section-------->
+<div id="contact">
+    <div class="container">
+        <div class="row">
+            <div class="contact-left">
+                <h1 class="sub-title">Get in Touch</h1>
+                <p>If you have any questions or want to collaborate, feel free to reach out!</p>
+                <p><i class="fa-solid fa-envelope"></i> derejeteshager0@gmail.com</p>
+                <div class="social-icons">
+                    <a href="https://linkedin.com/in/dereje-teshager-734a45288"><i class="fab fa-linkedin"></i></a>
+                    <a href="https://github.com/dteshager"><i class="fab fa-github"></i></a>
+                </div>
+                <a href="dereje_resume.pdf" download class="btn">Download Resume</a>
+            </div>
+            <div class="contact-right">
+                <form action="https://formspree.io/f/mqablzkw" method="POST">
+                    <input type="Text" name='Name' placeholder="Your Name" required>
+                    <input type="Email" name='Email' placeholder="Your Email" required>
+                    <textarea name="Message" rows="6" placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="copyright">
+        <p>&copy; <span id="year"></span> Dereje Teshager. All rights reserved.</p>
+    </div>
+
+
+</div>
+
+
+<script>
+    var tablinks = document.getElementsByClassName('tab-links');
+    var tabcontents = document.getElementsByClassName('tab-contents');
+
+    function opentab(tabname) {
+        for (let tablink of tablinks) {
+            tablink.classList.remove('active-link');
+        }
+        for (let tabcontent of tabcontents) {
+            tabcontent.classList.remove('active-tab');
+        }
+        event.currentTarget.classList.add('active-link');
+        document.getElementById(tabname).classList.add('active-tab');
+    }
+</script>
+<script>
+    // Set the current year in the copyright section
+    document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+<script>
+  function toggleMenu() {
+    const navLinks = document.querySelector('nav ul');
+    navLinks.classList.toggle('show');
+  }
+</script>
+
+</body>
+</html>
