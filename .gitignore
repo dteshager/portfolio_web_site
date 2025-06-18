@@ -1,6 +1,6 @@
 # Environment variables
 .env
-.pem
+portfolio.pem
 
 # Python
 __pycache__/
