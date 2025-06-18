@@ -7,6 +7,9 @@
     <title>Dereje's personal website</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css">
+
+
 
 </head>
 <body>
@@ -18,7 +21,7 @@
                 <li><a href="#header">Home</a></li>
                 <li><a href="#about">About</a></li>
                 <li><a href="#portfolio">Projects</a></li>
-                <li><a href="achievements.html">Achievements</a></li>
+                <li><a href="#achievements">Achievements</a></li>
                 <li><a href="#contact">Contact</a></li>
             </ul>
             <i class="fas fa-bars menu-icon" onclick="toggleMenu()"></i>
@@ -132,29 +135,54 @@
                 <img src="images/work-1.png" style="width: 100%; height: auto;" alt="Project 1">
                 <div class="layer">
                     <h3> File System Watcher Window Application </h3>
-                    <p>A web application that helps users manage their tasks efficiently.</p>
-                    <a href="#"><i class="fa-solid fa-link"></i></a>
+                    <p>This is a Windows desktop application built with Python, Tkinter, and SQLite,
+                        using the Watchdog library to monitor changes in a specified directory.</p>
+                    <a href="https://github.com/dteshager/File-system-watcher/blob/main/README.md"><i class="fa-solid fa-link"></i>Learn more</a>
                 </div>
             </div>
             <div class="work">
-                <img src="images/work-2.png" style="width: 100%; height: auto;" alt="Project 2">
+                <img src="images/work-2.jpg" style="width: 100%; height: auto;" alt="Project 2">
                 <div class="layer">
                     <h3>Automat payment with python using selenium python module</h3>
-                    <p>A mobile app that connects users with local services.</p>
-                    <a href="#"><i class="fa-solid fa-link"></i></a>
+                    <p>Built a Python automation script using Selenium to log in, fill out, and
+                        submit monthly bill payments for a company that lacks auto-pay support.
+                        The system handles login, form input, and
+                        confirmation — saving time and ensuring no missed payments.</p>
+                    <a href="https://github.com/dteshager/Selenium_Automation/blob/main/README.md"><i class="fa-solid fa-link"></i>Learn more</a>
                 </div>
             </div>
             <div class="work">
-                <img src="images/work-3.png" style="width: 100%; height: auto;" alt="Project 3">
+                <img src="images/work-3.jpg" style="width: 100%; height: auto;" alt="Project 3">
                 <div class="layer">
                     <h3>Career Finder</h3>
-                    <p>An e-commerce platform that allows users to buy and sell products.</p>
-                    <a href="#"><i class="fa-solid fa-link"></i></a>
+                    <p>A modern, AI-powered career assistant platform designed to help users search for jobs, build smarter resumes,
+                        and connect with employers based on skillsets.</p>
+                    <a href="https://github.com/dteshager/careerfinder/blob/main/README.md"><i class="fa-solid fa-link"></i>Learn more</a>
                 </div>
             </div>
         </div>
     </div>
 </div>
+<!--------Achievements-------->
+<section id="achievements-section">
+  <h1 class="sub-title">My Achievements</h1>
+  <p class="description">
+    Here are a few certificates and accomplishments I'm proud to share.
+  </p>
+
+  <div id="achievements" class="splide" aria-label="Achievements Carousel">
+    <div class="splide__track">
+      <ul class="splide__list">
+        <li class="splide__slide"><img src="images/UW.jpg" alt="UW Certificate"></li>
+        <li class="splide__slide"><img src="images/BS.jpg" alt="Bachelor Degree"></li>
+        <li class="splide__slide"><img src="images/coding.PNG" alt="Coding Cert"></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+
 <!--------contact section-------->
 <div id="contact">
     <div class="container">
@@ -179,12 +207,14 @@
             </div>
         </div>
     </div>
-    <div class="copyright">
-        <p>&copy; <span id="year"></span> Dereje Teshager. All rights reserved.</p>
-    </div>
-
-
 </div>
+
+
+
+<div class="copyright">
+    <p>&copy; <span id="year"></span> Dereje Teshager. All rights reserved.</p>
+</div>
+
 
 
 <script>
@@ -213,6 +243,18 @@
     navLinks.classList.toggle('show');
   }
 </script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    new Splide('#achievements', {
+      type   : 'loop',
+      autoplay: true,
+      interval: 3000,
+      arrows: true,
+      pagination: true,
+    }).mount();
+  });
+</script>
 
+<script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
 </body>
 </html>
