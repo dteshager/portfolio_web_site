@@ -44,4 +44,10 @@ jobs:
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
             docker stop my-static-site || true
             docker rm my-static-site || true
-            docker run -d -p 80:80 --name my-static-site ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest 
+            docker run -d \
+              -p 80:80 \
+              -p 443:443 \
+              -v /etc/letsencrypt:/etc/letsencrypt \  # Persist certificates
+              -v /var/www/certbot:/var/www/certbot \  # Certbot challenge files
+              --name my-static-site \
+              ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest

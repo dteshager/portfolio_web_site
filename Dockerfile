@@ -1,20 +1,27 @@
-# Use Ubuntu as the base image
 FROM ubuntu:22.04
 
-# Install Nginx
+# Install Nginx + Certbot (for SSL)
 RUN apt-get update && \
-    apt-get install -y nginx && \
+    apt-get install -y nginx certbot python3-certbot-nginx && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Remove the default nginx static assets
-RUN rm -rf /var/www/html/*
+# Remove default Nginx config
+RUN rm -rf /etc/nginx/sites-enabled/default
 
-# Copy your static website files to the nginx public directory
+# Copy website files
 COPY . /var/www/html
 
-# Expose port 80
-EXPOSE 80
+# Copy Nginx config (created in Step 2)
+COPY nginx.conf /etc/nginx/nginx.conf
 
-# Start Nginx in the foreground
-CMD ["nginx", "-g", "daemon off;"]
+# Copy entrypoint script (created in Step 3)
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Expose HTTP/HTTPS ports
+EXPOSE 80
+EXPOSE 443
+
+# Run entrypoint script on startup
+ENTRYPOINT ["/entrypoint.sh"]
