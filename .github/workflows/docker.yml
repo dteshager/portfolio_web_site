@@ -40,6 +40,8 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
+          # Explicitly set the shell for robustness
+          shell: bash -lce " {0} "
           script: |
             # 1. Pull the latest Docker image
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
@@ -60,9 +62,16 @@ jobs:
             sleep 5
 
             # 4. Copy certificates from the EC2 host into the running container
-            # Use readlink -f to get the actual path of the file, not the symlink
-            FULLCHAIN_PATH=$(readlink -f /etc/letsencrypt/live/dteshager.com/fullchain.pem)
-            PRIVKEY_PATH=$(readlink -f /etc/letsencrypt/live/dteshager.com/privkey.pem)
+            # Use sudo with readlink -f to get the actual path of the file
+            # Add '|| true' to each assignment to prevent script from exiting immediately if readlink fails
+            FULLCHAIN_PATH=$(sudo readlink -f /etc/letsencrypt/live/dteshager.com/fullchain.pem || true)
+            PRIVKEY_PATH=$(sudo readlink -f /etc/letsencrypt/live/dteshager.com/privkey.pem || true)
+
+            # Check if paths are empty before attempting docker cp
+            if [ -z "${FULLCHAIN_PATH}" ] || [ -z "${PRIVKEY_PATH}" ]; then
+              echo "Error: Certificate paths are empty after readlink -f. Certificates may not exist or permissions are too restrictive for readlink."
+              exit 1 # Exit the script with an error
+            fi
 
             echo "Copying fullchain.pem into container from ${FULLCHAIN_PATH}..."
             sudo docker cp "${FULLCHAIN_PATH}" ${CONTAINER_ID}:/etc/nginx/certs/dteshager.com/fullchain.pem
