@@ -30,8 +30,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
 
-  # ... (rest of your docker.yml before the deploy job) ...
-
   deploy:
     needs: build
     runs-on: ubuntu-latest
@@ -43,24 +41,41 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            # 1. Pull the latest Docker image
+            # 1. Pull the latest Docker image for your website
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
 
-            # 2. Stop and remove any existing container named 'my-static-site'
+            # 2. Stop and remove any existing Nginx container
             docker stop my-static-site || true
             docker rm my-static-site || true
+            
+            # Stop and remove any existing Certbot container
+            docker stop certbot || true
+            docker rm certbot || true
 
-            # 3. Start the new container with the shared Docker volume for certificates
-            # Ensure the entire docker run command is on one logical line or properly escaped
+            # 3. Create a shared network
+            docker network create webapp-network || true
+
+            # 4. Create the necessary Docker volumes
+            docker volume create --name=certbot_certs
+            docker volume create --name=certbot_webroot
+
+            # 5. Start the Nginx container
             docker run -d \
+              --name my-static-site \
+              --network webapp-network \
               -p 80:80 \
               -p 443:443 \
-              -v certbot_certs:/etc/letsencrypt:ro \
-              --name my-static-site \
+              -v certbot_certs:/etc/letsencrypt \
+              -v certbot_webroot:/var/www/html \
               ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
+              
+            # 6. Run the Certbot container to handle renewals
+            docker run -d \
+              --name certbot \
+              --network webapp-network \
+              -v certbot_certs:/etc/letsencrypt \
+              -v certbot_webroot:/var/www/html \
+              certbot/certbot \
+              renew --dry-run # Initially run with --dry-run to test
 
-            # 4. (Optional) Check logs for initial startup errors
-            echo "Checking container startup logs..."
-            docker logs my-static-site --tail 20
-
-            echo "Deployment complete. Check your website."
+            echo "Deployment complete. Check your website and logs."
