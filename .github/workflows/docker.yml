@@ -41,12 +41,46 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
+            # 1. Pull the latest Docker image
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
+
+            # 2. Stop and remove any existing container named 'my-static-site'
             docker stop my-static-site || true
             docker rm my-static-site || true
-            docker run -d \
+
+            # 3. Start the new container
+            # We assign it to a temporary name first to ensure we can get its ID
+            # IMPORTANT: Removed the -v /etc/letsencrypt:/etc/letsencrypt mount
+            CONTAINER_ID=$(docker run -d \
               -p 80:80 \
               -p 443:443 \
-              -v /etc/letsencrypt:/etc/letsencrypt \
-              --name my-static-site \
-              ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest 
+              --name temp-my-static-site \
+              ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest)
+
+            # Wait a few seconds for the container and Nginx to start up
+            echo "Waiting for container to start..."
+            sleep 5
+
+            # 4. Copy certificates from the EC2 host into the running container
+            # These are the certificates obtained by Certbot on your EC2 instance
+            echo "Copying fullchain.pem into container..."
+            sudo docker cp /etc/letsencrypt/live/dteshager.com/fullchain.pem ${CONTAINER_ID}:/etc/nginx/certs/dteshager.com/fullchain.pem
+            echo "Copying privkey.pem into container..."
+            sudo docker cp /etc/letsencrypt/live/dteshager.com/privkey.pem ${CONTAINER_ID}:/etc/nginx/certs/dteshager.com/privkey.pem
+
+            # 5. Set correct permissions for Nginx (www-data user) inside the container
+            # This ensures Nginx can read the copied certificates
+            echo "Setting permissions inside container..."
+            sudo docker exec ${CONTAINER_ID} chmod 640 /etc/nginx/certs/dteshager.com/fullchain.pem
+            sudo docker exec ${CONTAINER_ID} chown www-data:www-data /etc/nginx/certs/dteshager.com/fullchain.pem
+            sudo docker exec ${CONTAINER_ID} chmod 640 /etc/nginx/certs/dteshager.com/privkey.pem
+            sudo docker exec ${CONTAINER_ID} chown www-data:www-data /etc/nginx/certs/dteshager.com/privkey.pem
+
+            # 6. Reload Nginx configuration inside the container to use the new certificates
+            echo "Reloading Nginx inside container..."
+            sudo docker exec ${CONTAINER_ID} nginx -s reload
+
+            # 7. Rename the temporary container to its final name
+            docker rename temp-my-static-site my-static-site
+
+            echo "Deployment and certificate setup complete."

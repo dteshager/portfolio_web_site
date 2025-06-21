@@ -1,20 +1,27 @@
-# Use Ubuntu as the base image
 FROM ubuntu:22.04
 
-# Install Nginx
+# Install Nginx and curl
 RUN apt-get update && \
-    apt-get install -y nginx && \
+    apt-get install -y nginx curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-# Remove the default nginx static assets
+# Remove default Nginx files
 RUN rm -rf /var/www/html/*
 
-# Copy your static website files to the nginx public directory
+# Copy your website files
 COPY . /var/www/html
 
-# Expose port 80
-EXPOSE 80
+# Copy custom Nginx config
+COPY nginx.conf /etc/nginx/sites-enabled/default
 
-# Start Nginx in the foreground
+# Create directory for certificates inside the container
+# Certificates will be copied into this location at runtime
+RUN mkdir -p /etc/nginx/certs/dteshager.com/
+
+# Expose both HTTP and HTTPS ports
+EXPOSE 80
+EXPOSE 443
+
+# Start Nginx
 CMD ["nginx", "-g", "daemon off;"]
