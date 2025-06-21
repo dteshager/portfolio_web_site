@@ -15,9 +15,8 @@ COPY . /var/www/html
 # Copy custom Nginx config
 COPY nginx.conf /etc/nginx/sites-enabled/default
 
-# Create directory for certificates inside the container
-# Certificates will be copied into this location at runtime
-RUN mkdir -p /etc/nginx/certs/dteshager.com/
+# NO LONGER NEEDED: RUN mkdir -p /etc/nginx/certs/dteshager.com/
+# NO LONGER NEEDED: COPY certs/dteshager.com/...
 
 # Expose both HTTP and HTTPS ports
 EXPOSE 80
