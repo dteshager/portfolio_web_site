@@ -34,62 +34,30 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy to EC2
+      - name: Debug Nginx Container Startup
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          # Explicitly set the shell for robustness
-          shell: bash -lce " {0} "
+          shell: bash -lce " {0} " # Keep this for robustness
           script: |
             # 1. Pull the latest Docker image
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
-
+  
             # 2. Stop and remove any existing container named 'my-static-site'
             docker stop my-static-site || true
             docker rm my-static-site || true
-
-            # 3. Start the new container
-            CONTAINER_ID=$(docker run -d \
+  
+            # 3. Temporarily run the new container in foreground to see startup logs
+            # REMOVED -d flag. Container will run until it exits or you stop the job.
+            # ALSO REMOVED all subsequent commands for now (copy, perm, reload, rename)
+            echo "Starting container in foreground to capture logs..."
+            docker run \
               -p 80:80 \
               -p 443:443 \
-              --name temp-my-static-site \
-              ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest)
-
-            # Wait a few seconds for the container and Nginx to start up
-            echo "Waiting for container to start..."
-            sleep 5
-
-            # 4. Copy certificates from the EC2 host into the running container
-            # Use sudo with readlink -f to get the actual path of the file
-            # Add '|| true' to each assignment to prevent script from exiting immediately if readlink fails
-            FULLCHAIN_PATH=$(sudo readlink -f /etc/letsencrypt/live/dteshager.com/fullchain.pem || true)
-            PRIVKEY_PATH=$(sudo readlink -f /etc/letsencrypt/live/dteshager.com/privkey.pem || true)
-
-            # Check if paths are empty before attempting docker cp
-            if [ -z "${FULLCHAIN_PATH}" ] || [ -z "${PRIVKEY_PATH}" ]; then
-              echo "Error: Certificate paths are empty after readlink -f. Certificates may not exist or permissions are too restrictive for readlink."
-              exit 1 # Exit the script with an error
-            fi
-
-            echo "Copying fullchain.pem into container from ${FULLCHAIN_PATH}..."
-            sudo docker cp "${FULLCHAIN_PATH}" ${CONTAINER_ID}:/etc/nginx/certs/dteshager.com/fullchain.pem
-            echo "Copying privkey.pem into container from ${PRIVKEY_PATH}..."
-            sudo docker cp "${PRIVKEY_PATH}" ${CONTAINER_ID}:/etc/nginx/certs/dteshager.com/privkey.pem
-
-            # 5. Set correct permissions for Nginx (www-data user) inside the container
-            echo "Setting permissions inside container..."
-            sudo docker exec ${CONTAINER_ID} chmod 640 /etc/nginx/certs/dteshager.com/fullchain.pem
-            sudo docker exec ${CONTAINER_ID} chown www-data:www-data /etc/nginx/certs/dteshager.com/fullchain.pem
-            sudo docker exec ${CONTAINER_ID} chmod 640 /etc/nginx/certs/dteshager.com/privkey.pem
-            sudo docker exec ${CONTAINER_ID} chown www-data:www-data /etc/nginx/certs/dteshager.com/privkey.pem
-
-            # 6. Reload Nginx configuration inside the container to use the new certificates
-            echo "Reloading Nginx inside container..."
-            sudo docker exec ${CONTAINER_ID} nginx -s reload
-
-            # 7. Rename the temporary container to its final name
-            docker rename temp-my-static-site my-static-site
-
-            echo "Deployment and certificate setup complete."
+              --name my-static-site-debug \
+              ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
+  
+            # If the container exits quickly, its logs will appear here.
+            # If it stays running, you will need to manually stop the GitHub Actions job.
