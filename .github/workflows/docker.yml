@@ -34,30 +34,30 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Debug Nginx Container Startup
+      - name: Deploy to EC2
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_SSH_KEY }}
-          shell: bash -lce " {0} " # Keep this for robustness
           script: |
             # 1. Pull the latest Docker image
             docker pull ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
-  
+
             # 2. Stop and remove any existing container named 'my-static-site'
             docker stop my-static-site || true
             docker rm my-static-site || true
-  
-            # 3. Temporarily run the new container in foreground to see startup logs
-            # REMOVED -d flag. Container will run until it exits or you stop the job.
-            # ALSO REMOVED all subsequent commands for now (copy, perm, reload, rename)
-            echo "Starting container in foreground to capture logs..."
-            docker run \
+
+            # 3. Start the new container with the shared Docker volume for certificates
+            docker run -d \
               -p 80:80 \
               -p 443:443 \
-              --name my-static-site-debug \
+              -v certbot_certs:/etc/letsencrypt:ro \  # Mount the Docker volume read-only
+              --name my-static-site \
               ${{ secrets.DOCKERHUB_USERNAME }}/my-static-site:latest
-  
-            # If the container exits quickly, its logs will appear here.
-            # If it stays running, you will need to manually stop the GitHub Actions job.
+
+            # 4. (Optional) Check logs for initial startup errors
+            echo "Checking container startup logs..."
+            docker logs my-static-site --tail 20
+
+            echo "Deployment complete. Check your website."
